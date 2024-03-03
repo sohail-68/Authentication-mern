@@ -18,6 +18,7 @@ router.post("/register", async (req, res) => {
     try {
 
         const preuser = await userdb.findOne({ email: email });
+        console.log(preuser);
 
         if (preuser) {
             res.status(422).json({ error: "This Email is Already Exist" })
@@ -91,6 +92,24 @@ router.post("/login", async (req, res) => {
     }
 });
 
+router.post('/login',async(req,res)=>{
+    const {email,password}=req.body;
+  
+try{
+    const va=usedm.fid({email:email})
+    if(va){
+        const pa=await bcrypt.compare({password:va.password})
+        const token=pa.generateAuthtoken()
+        res.cokkies("token",token,{
+            expires:new Date(Date.now()+9000000),
+                    httpOnly:true
+
+        })
+    }
+}    catch(er){
+
+    }
+})
 
 
 // user valid
@@ -102,6 +121,8 @@ router.get("/validuser",authenticate,async(req,res)=>{
         res.status(401).json({status:401,error});
     }
 });
+
+
 
 
 // user logout
